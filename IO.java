@@ -1,5 +1,4 @@
 import java.io.*;
-//import sun.security.ssl.SunJSSE;
 
 public class IO extends program
 {
@@ -7,6 +6,17 @@ public class IO extends program
     static int puzzle_size = 0;
     BufferedReader br = null;
     FileReader fr = null;
+
+    public static boolean isNumber(String s)
+    {
+        try{
+            double i  = Double.parseDouble(s);
+        }
+        catch (NumberFormatException e){
+            return false;
+        }
+        return true;
+    }
 
     public int getPuzzleSize(String args) throws Exception
     {
@@ -16,10 +26,13 @@ public class IO extends program
         br = new BufferedReader(fr);
         
         line = br.readLine();
-        if (line.contains(" "))
-            puzzle_size = Integer.parseInt(line.substring(0, line.indexOf(" ")));
-        else
-            puzzle_size = Integer.parseInt(line);
+        if (isNumber(line))
+        {
+            if (line.contains(" "))
+                puzzle_size = Integer.parseInt(line.substring(0, line.indexOf(" ")));
+            else
+                puzzle_size = Integer.parseInt(line);
+        }
         return (puzzle_size);
     }
 

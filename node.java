@@ -11,7 +11,7 @@ class node extends program
     public int [][]puzzle = new int[size][size];
     public int row = 0;
     public int col = 0;
-    public int h_val = 0;
+    public int move_cost = 0;
     public String direction = "initial";
     
     public node(int [][]puz)
@@ -80,6 +80,22 @@ class node extends program
         }
     }
 
+    public int cal_move_cost(int [][]puz)
+    {
+        int [][]goal_state = io_class.getGoalState();
+        int f = 0;
+
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                find_piece(goal_state, puz[x][y]);
+                f += Math.abs(x - row) + Math.abs(y - col);
+            }
+        }
+        return (f);
+    }
+
     public void printpuzzle()
     {
         for (int x = 0; x < puzzle_size; x++)
@@ -93,6 +109,7 @@ class node extends program
 
     public void move_left(int [][]pz)
     {
+        find_piece(this.puzzle, 0);
         if (col - 1 > -1)
         {
             int [][]copy_puzzle = copy_puzzle(pz);
@@ -102,6 +119,7 @@ class node extends program
             copy_puzzle[row][col - 1] = blank;            
             node child = new node(copy_puzzle);
             child.parent = this;
+            child.move_cost = cal_move_cost(child.puzzle);
             child.direction = "left";
             child_nodes.add(child);
         }
@@ -109,6 +127,7 @@ class node extends program
 
     public void move_right(int [][]pz)
     {
+        find_piece(this.puzzle, 0);
         if (col + 1 < size)
         {
             int [][]copy_puzzle = copy_puzzle(pz);
@@ -118,6 +137,7 @@ class node extends program
             copy_puzzle[row][col + 1] = blank;            
             node child = new node(copy_puzzle);
             child.parent = this;
+            child.move_cost = cal_move_cost(child.puzzle);
             child.direction = "right";
             child_nodes.add(child);
         }
@@ -125,6 +145,7 @@ class node extends program
 
     public void move_up(int [][]pz)
     {
+        find_piece(this.puzzle, 0);
         if (row - 1 > -1)
         {
             int [][]copy_puzzle = copy_puzzle(pz);
@@ -134,6 +155,7 @@ class node extends program
             copy_puzzle[row - 1][col] = blank;            
             node child = new node(copy_puzzle);
             child.parent = this;
+            child.move_cost = cal_move_cost(child.puzzle);
             child.direction = "up";
             child_nodes.add(child);
         }
@@ -141,6 +163,7 @@ class node extends program
 
     public void move_down(int [][]pz)
     {
+        find_piece(this.puzzle, 0);
         if (row + 1 < size)
         {
             int [][]copy_puzzle = copy_puzzle(pz);
@@ -150,6 +173,7 @@ class node extends program
             copy_puzzle[row + 1][col] = blank;            
             node child = new node(copy_puzzle);
             child.parent = this;
+            child.move_cost = cal_move_cost(child.puzzle);
             child.direction = "down";
             child_nodes.add(child);
         }
@@ -157,7 +181,6 @@ class node extends program
 
     public void possible_moves()
     {
-        find_piece(this.puzzle, 0);
         move_left(this.puzzle);
         move_right(this.puzzle);
         move_up(this.puzzle);
