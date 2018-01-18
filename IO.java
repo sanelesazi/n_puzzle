@@ -1,5 +1,5 @@
 import java.io.*;
-import sun.security.ssl.SunJSSE;
+//import sun.security.ssl.SunJSSE;
 
 public class IO extends program
 {
@@ -40,6 +40,8 @@ public class IO extends program
             else
             {
                 String []row = line.split(" ");
+                if (row.length != puzzle_size)      //ensuring we have 3 /4 /5 pieces if it is a 3 /4 /5 dimension puzzle
+                    return (null);
                 j = 0;
                 for (String val:row)
                 {
@@ -57,24 +59,37 @@ public class IO extends program
 
     public int [][]getGoalState()
     {
-        int [][]goal_state = new int [puzzle_size][puzzle_size];
-        int val, max, i;
-
-        max = puzzle_size * puzzle_size;
-        val = 1;
-        i = 0;
-        while (val < max)
+        if (puzzle_size == 3)
         {
-            for (int j = 0; j < puzzle_size; j++)
-            {
-                if (val == max)
-                    goal_state[i][j] = 0;
-                else
-                    goal_state[i][j] = val;
-                val++;
-            }
-            i++;
+            int [][]goal_state = new int [][]{
+                                {1, 2, 3},
+                                {8, 0, 4},
+                                {7, 6, 5}
+            };
+            return (goal_state);
         }
-        return (goal_state);
+        if (puzzle_size == 4)
+        {
+            int [][]goal_state = new int [][]{
+                                {1, 2, 3, 4},
+                                {12, 13, 14, 5},
+                                {11, 0, 15, 6},
+                                {10, 9, 8, 7}
+            };
+            return (goal_state);
+        }
+        if (puzzle_size == 5)
+        {
+            int [][]goal_state = new int [][]{
+                                {1, 2, 3, 4, 5},
+                                {16, 17, 18, 19, 6},
+                                {15, 24, 0, 20, 7},
+                                {14, 23, 22, 21, 8},
+                                {13, 12, 11, 10, 9},
+            };
+            return (goal_state);
+        }
+        else
+            return (null);
     }
 }
