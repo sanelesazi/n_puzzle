@@ -1,21 +1,14 @@
 import java.io.*;
 import java.util.*;
 
+import jdk.nashorn.internal.runtime.regexp.joni.ast.Node;
+
 public class program
 {
     static IO io_class = new IO();
     static search s_class = new search();
     static int puzzle_size = 0;
 
-    static void printpuzzle(int [][]pz)
-    {
-        for (int x = 0; x < puzzle_size; x++)
-        {
-            for (int y = 0; y < puzzle_size; y++)
-                System.out.print(pz[x][y] +" ");
-            System.out.println("");
-        }
-    }
     static int errorHandling(int [][]puzzle)
     {
         if (puzzle == null || (puzzle_size < 3 || puzzle_size > 5)) //Error handling
@@ -43,16 +36,11 @@ public class program
                 s_class.breadthfirstsearch(root);
             else
                 System.out.println("Heuristic function not found");
-            //root.possible_moves();
-            
-            /*System.out.println("nodes: "+root.child_nodes);
-            for (node x: root.child_nodes)
-            {
-                printpuzzle(x.puzzle);
-                System.out.println();
-            }*/
         }
         else
-            System.out.println("error");
+        {
+            System.out.println("usage: java program <heuristic function> <puzzle input file>");
+            System.out.println("       Available heuristics: 'bfs' / 'ida' / 'amo'");
+        }
     }
 }

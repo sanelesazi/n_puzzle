@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class search
@@ -16,12 +18,14 @@ public class search
         return (lowest);
     }*/
 
-    public LinkedList<node> breadthfirstsearch(node root)
+    public LinkedList<node> breadthfirstsearch(node root) throws Exception
     {
         LinkedList<node> solution_path = new LinkedList<node>();
         LinkedList<node> open_list = new LinkedList<node>();
         LinkedList<node> closed_list = new LinkedList<node>();
         IO io_class = new IO();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String prompt = "";
 
         open_list.add(root);
         boolean solution_found = false;
@@ -36,12 +40,18 @@ public class search
             for (int i = 0; i < current.child_nodes.size(); i++)
             {
                 node current_child = current.child_nodes.get(i);
-                System.out.println("openlist size: "+ open_list.size() + "childnodes: "+ current_child.child_nodes);
                 if (current_child.is_goal())
-                { 
+                {
                     System.out.println("Solution Found!");
-                    solution_found = true;
+                    System.out.println("Would you like to print the solution? (y / n)");
                     path_to_solution(solution_path, current_child);
+                    prompt = br.readLine();
+                    if (prompt.equals("y") || prompt.equals("yes"))
+                    {
+                        System.out.println("yes");
+                        print_solution(solution_path);
+                    }
+                    solution_found = true;
                     System.out.println("Found in "+ (solution_path.size() - 1) + " steps");
                 }
                 open_list.add(current_child);
@@ -70,5 +80,16 @@ public class search
                 return (true);
         }
         return (false);
+    }
+
+    private static void print_solution(LinkedList<node> solution)
+    {
+        int list_size = solution.size() - 1;
+        while (list_size > -1)
+        {
+            System.out.println(solution.get(list_size).direction);
+            solution.get(list_size).printpuzzle();
+            list_size--;
+        }
     }
 }

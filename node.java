@@ -12,6 +12,7 @@ class node extends program
     public int row = 0;
     public int col = 0;
     public int h_val = 0;
+    public String direction = "initial";
     
     public node(int [][]puz)
     {
@@ -79,20 +80,15 @@ class node extends program
         }
     }
 
-    public int calc_hval(int [][]puz)
+    public void printpuzzle()
     {
-        int f = 0;
-        int [][]goal_state = io_class.getGoalState();
-
-        for (int x = 0; x < size; x++)
+        for (int x = 0; x < puzzle_size; x++)
         {
-            for (int y = 0; y < size; y++)
-            {
-                find_piece(goal_state, puz[x][y]);
-                f += Math.abs(x - row) + Math.abs(y - col);
-            }
+            for (int y = 0; y < puzzle_size; y++)
+                System.out.print(this.puzzle[x][y] +" ");
+            System.out.println();
         }
-        return (f);
+        System.out.println();
     }
 
     public void move_left(int [][]pz)
@@ -106,6 +102,7 @@ class node extends program
             copy_puzzle[row][col - 1] = blank;            
             node child = new node(copy_puzzle);
             child.parent = this;
+            child.direction = "left";
             child_nodes.add(child);
         }
     }
@@ -121,6 +118,7 @@ class node extends program
             copy_puzzle[row][col + 1] = blank;            
             node child = new node(copy_puzzle);
             child.parent = this;
+            child.direction = "right";
             child_nodes.add(child);
         }
     }
@@ -136,6 +134,7 @@ class node extends program
             copy_puzzle[row - 1][col] = blank;            
             node child = new node(copy_puzzle);
             child.parent = this;
+            child.direction = "up";
             child_nodes.add(child);
         }
     }
@@ -151,6 +150,7 @@ class node extends program
             copy_puzzle[row + 1][col] = blank;            
             node child = new node(copy_puzzle);
             child.parent = this;
+            child.direction = "down";
             child_nodes.add(child);
         }
     }
