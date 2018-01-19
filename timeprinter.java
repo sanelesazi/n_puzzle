@@ -3,7 +3,7 @@ import java.util.*;
 public class timeprinter extends program
 { 
     private static int counter = 0; 
-    public static void timer() 
+    public void timer() 
     { 
         Timer timer = new Timer(); 
         timer.scheduleAtFixedRate(new TimerTask()
@@ -11,8 +11,8 @@ public class timeprinter extends program
             public void run()
             { 
                 counter++; 
-                System.out.println(counter); 
+                System.out.print(counter +" "); 
             } 
-        }, new Date(), 1000); 
+        }, new Date(), 1000);
     } 
 } 

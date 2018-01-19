@@ -9,12 +9,14 @@ public class search
         LinkedList<node> open_list = new LinkedList<node>(); //stores nodes that are being inspected
         LinkedList<node> closed_list = new LinkedList<node>(); //stores nodes that have been inspected
         IO io_class = new IO();
+        timeprinter tp = new timeprinter();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         boolean solution_found = false;
         String prompt = "";
 
         open_list.add(root);
         root.printpuzzle();
+        tp.timer();
         System.out.println("Searching...");
 
         while (!solution_found && !open_list.isEmpty())
