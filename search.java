@@ -3,7 +3,7 @@ import java.util.*;
 
 public class search
 {
-    public LinkedList<node> breadthfirstsearch(node root) throws Exception
+    public LinkedList<node> breadthfirstsearch(node root, String heuristic_func) throws Exception
     {
         LinkedList<node> solution_path = new LinkedList<node>(); //will save the solution path
         LinkedList<node> open_list = new LinkedList<node>(); //stores nodes that are being inspected
@@ -14,13 +14,15 @@ public class search
         String prompt = "";
 
         open_list.add(root);
+        root.printpuzzle();
+        System.out.println("Searching...");
 
-        while (!open_list.isEmpty() && !solution_found)
+        while (!solution_found && !open_list.isEmpty())
         {
             node current = open_list.get(0);
             closed_list.add(current);
             open_list.remove(0);
-            current.possible_moves();
+            current.expand_node(heuristic_func);
 
             int lowest_move_cost = get_lowest_move_cost(current.child_nodes);
             for (int i = 0; i < current.child_nodes.size(); i++)
@@ -42,6 +44,8 @@ public class search
                     solution_found = true;
                     System.out.println("Solution found in "+ (solution_path.size() - 1) + " steps");
                 }
+                //System.out.println("child nodes h: " + current_child.move_cost + " dir: " + current_child.direction);
+                //current_child.printpuzzle();
                 if (!contained(open_list, current_child) && !contained(closed_list, current_child)) //if the node has never been inspected before
                     open_list.add(current_child);                                                   //add the node to be inspected
             }

@@ -4,6 +4,7 @@ public class IO extends program
 {
     String file;
     static int puzzle_size = 0;
+    static int startpos = 0;
     BufferedReader br = null;
     FileReader fr = null;
 
@@ -26,12 +27,18 @@ public class IO extends program
         br = new BufferedReader(fr);
         
         line = br.readLine();
-        if (isNumber(line))
+        while (puzzle_size == 0) 
         {
-            if (line.contains(" "))
-                puzzle_size = Integer.parseInt(line.substring(0, line.indexOf(" ")));
+            if (isNumber(line))
+            {
+                if (line.contains(" "))
+                    puzzle_size = Integer.parseInt(line.substring(0, line.indexOf(" ")));
+                else
+                    puzzle_size = Integer.parseInt(line);
+            }
             else
-                puzzle_size = Integer.parseInt(line);
+                line = br.readLine();    
+            startpos++;
         }
         return (puzzle_size);
     }
@@ -43,9 +50,10 @@ public class IO extends program
         String line;
         int [][] puzzle = new int[puzzle_size][puzzle_size];
         int i = 0;
-        int j;
+        int j = -1;
 
-        line = br.readLine();
+        while (++j < startpos)
+            br.readLine();
         while ((line = br.readLine()) != null && i < puzzle_size)
         {
             if (line.isEmpty())
