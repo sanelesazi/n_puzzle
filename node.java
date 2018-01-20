@@ -4,7 +4,7 @@ import java.util.*;
 class node extends program
 {
     IO io_class = new IO();
-    private int [][]goal_state = io_class.getGoalState();
+    public int [][]goal_state = io_class.getGoalState();
     public int size = program.puzzle_size;
     public LinkedList <node> child_nodes = new LinkedList<node>();
     public node parent;
@@ -79,10 +79,10 @@ class node extends program
             }
         }
     }
-
+    //HEURISTIC FUNCTIONS BELOW
     private int man_hattan_distance(int [][]puz)
     {
-        int [][]goal_state = io_class.getGoalState();
+        //int [][]goal_state = io_class.getGoalState();
         int distance = 0;
 
         for (int x = 0; x < size; x++)
@@ -98,7 +98,6 @@ class node extends program
 
     private int hamming_distance(int [][]puz)
     {
-        int [][]goal_state = io_class.getGoalState();
         int misplaced_tiles = 0;
 
         for (int x = 0; x < size; x++)
@@ -112,6 +111,79 @@ class node extends program
         return (misplaced_tiles);
     }
 
+    private int linear_conflict(int [][]puz)
+    {
+        int distance = 0;
+        int temp = 0;
+        int i; int j;
+
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                if (goal_state[x][y] != puz[x][y])
+                {
+                    find_piece(goal_state, puz[x][y]);
+                    temp = Math.abs(x - row) + Math.abs(y - col);
+                    if (x > row) //direction is up to get to goal
+                    {
+                        i = x - 1;
+                        while (i >= row)
+                        {
+                            find_piece(goal_state, puz[i][y]);
+                            if (i == row)
+                            {
+                                temp += 2;
+                                break ;
+                            }
+                        }
+                    }
+                    else //direction is down to get to goal
+                    {
+                        i = x + 1;
+                        while (i <= row)
+                        {
+                            find_piece(goal_state, puz[i][y]);
+                            if (i == row)
+                            {
+                                temp += 2;
+                                break ;
+                            }
+                        }
+                    }
+                    if (y > col)
+                    {
+                        j = y - 1;
+                        while (j >= row)
+                        {
+                            find_piece(goal_state, puz[i][y]);
+                            if (j == col)
+                            {
+                                temp += 2;
+                                break ;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        j = x + 1;
+                        while (j <= row)
+                        {
+                            find_piece(goal_state, puz[i][y]);
+                            if (j == col)
+                            {
+                                temp += 2;
+                                break ;
+                            }
+                        }
+                    }
+                    distance += temp;
+                }
+            }
+        }
+        return (distance);
+    }
+
     public int cal_move_cost(int [][]puz, String h_func)
     {
         int f = 0;
@@ -121,6 +193,8 @@ class node extends program
             case "man": f = man_hattan_distance(puz);
                 break ;
             case "ham": f = hamming_distance(puz);
+                break ;
+            case "lin": f = linear_conflict(puz);
                 break ;
         }
         return (f);

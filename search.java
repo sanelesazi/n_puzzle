@@ -10,16 +10,16 @@ public class search
         LinkedList<node> closed_list = new LinkedList<node>(); //stores nodes that have been inspected
         IO io_class = new IO();
         timeprinter tp = new timeprinter();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         boolean solution_found = false;
-        String prompt = "";
 
         open_list.add(root);
         root.printpuzzle();
-        tp.timer();
+        tp.start_timer();
         System.out.println("Searching...");
 
-        while (!solution_found && !open_list.isEmpty())
+        if (root.is_goal()) //checks if the puzzle is already at goal state
+            solution_path = open_list;
+        while (!solution_found && !open_list.isEmpty() && !root.is_goal())
         {
             node current = open_list.get(0);
             closed_list.add(current);
@@ -30,28 +30,19 @@ public class search
             for (int i = 0; i < current.child_nodes.size(); i++)
             {
                 node current_child = current.child_nodes.get(i);
+                System.out.println("dir: "+ current_child.direction + " f val: "+ current_child.move_cost);
                 if (current_child.move_cost > lowest_move_cost) //ignores the node if it has a high f value
                     continue ;
                 if (current_child.is_goal())
                 {
-                    System.out.println("Solution Found!");
-                    System.out.println("Would you like to print the solution? (y / n)");
                     path_to_solution(solution_path, current_child);
-                    prompt = br.readLine();
-                    if (prompt.equals("y") || prompt.equals("yes"))
-                    {
-                        System.out.println("yes");
-                        print_solution(solution_path);
-                    }
                     solution_found = true;
-                    System.out.println("Solution found in "+ (solution_path.size() - 1) + " steps");
                 }
-                //System.out.println("child nodes h: " + current_child.move_cost + " dir: " + current_child.direction);
-                //current_child.printpuzzle();
                 if (!contained(open_list, current_child) && !contained(closed_list, current_child)) //if the node has never been inspected before
                     open_list.add(current_child);                                                   //add the node to be inspected
             }
         }
+        tp.stop_timer();
         return (solution_path);
     }
 
@@ -87,16 +78,5 @@ public class search
                 return (true);
         }
         return (false);
-    }
-
-    private static void print_solution(LinkedList<node> solution) //this simply prints the nodes that lead to the solution
-    {
-        int list_size = solution.size() - 1;
-        while (list_size > -1)
-        {
-            System.out.println(solution.get(list_size).direction);
-            solution.get(list_size).printpuzzle();
-            list_size--;
-        }
     }
 }
