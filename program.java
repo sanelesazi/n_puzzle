@@ -7,6 +7,25 @@ public class program
     static search s_class = new search();
     static int puzzle_size = 0;
 
+    static int check_dup_n_range(int [][]puzzle)
+    {
+        int max_num = (puzzle_size * puzzle_size) - 1;
+        int []numbers = new int[(puzzle_size * puzzle_size)];
+
+        for (int x = 0; x < puzzle_size; x++)
+        {
+            for (int y = 0; y < puzzle_size; y++)
+            {
+                if (puzzle[x][y] > max_num || puzzle[x][y] < 0)
+                    return (1);
+                if (numbers[puzzle[x][y]] == 1)
+                    return (1);
+                numbers[puzzle[x][y]] = 1;
+            }
+        }
+        return (0);
+    }
+
     static int errorHandling(int [][]puzzle)
     {
         if (puzzle == null || (puzzle_size < 3 || puzzle_size > 5)) //Error handling
@@ -14,6 +33,11 @@ public class program
             if (puzzle_size < 3 || puzzle_size > 5)
                 System.out.println("Program only supports 3x3, 4x4 and 5x5 dimensions");
             System.out.println("Invalid puzzle format");
+            return -1;
+        }
+        if (check_dup_n_range(puzzle) == 1)
+        {
+            System.out.println("Error - Check for duplicates or puzzle numbers out of range");
             return -1;
         }
         return (0);
@@ -47,15 +71,24 @@ public class program
             node root = new node(init_puzzle);
             if (heuristic_function.equals("man") || heuristic_function.equals("ham") || heuristic_function.equals("lin"))
             {
+                switch(heuristic_function)
+                {
+                    case "man": System.out.println("Selected: Manhattan Distance");
+                    break ;
+                    case "ham": System.out.println("Selected: Hamming Distance");
+                    break ;
+                    case "lin": System.out.println("Selected: Linear Conflict");
+                    break ;
+                }
                 System.out.println(puzzle_size + " x " + puzzle_size +" Puzzle Found");
                 System.out.println();
-                solution = s_class.breadthfirstsearch(root, heuristic_function);
+                solution = s_class.breadthfirstsearch(root, heuristic_function); //solution linkedlist saves the nodes that made it to goal
                 if (solution.size() == 0)
                 {
                     System.out.println("No Solution found! - Suggestions:");
                     System.out.println("Try different heuristic function OR Solution may not exist at all");
                 }
-                else if (solution.size() == 1)
+                else if (solution.size() == 1) //If puzzle is at goal state, only 1 node will be in the list
                 {
                     System.out.println("Puzzle is in goal state");
                 }
@@ -69,9 +102,9 @@ public class program
                         System.out.println("yes");
                         print_solution(solution);
                     }
-                    if (solution.size() == 2)
+                    if (solution.size() == 2) //if only 2 steps, meaning 1 step, and not STEPS - this is jut for print out purposes (1 STEP || more than one STEPS)
                         s = ' ';
-                    System.out.println("Solution found in "+ (solution.size() - 1) + " step"+ s);
+                    System.out.println("Solution found in "+ (solution.size() - 1) + " step"+ s); //this will print STEPS if more than 1, and STEP if only 1
                 }
             }
             else

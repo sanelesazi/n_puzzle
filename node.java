@@ -84,13 +84,14 @@ class node extends program
     {
         //int [][]goal_state = io_class.getGoalState();
         int distance = 0;
+        int step = 1;
 
         for (int x = 0; x < size; x++)
         {
             for (int y = 0; y < size; y++)
             {
                 find_piece(goal_state, puz[x][y]);
-                distance += Math.abs(x - row) + Math.abs(y - col);
+                distance += step * (Math.abs(x - row) + Math.abs(y - col));
             }
         }
         return (distance);
@@ -114,71 +115,64 @@ class node extends program
     private int linear_conflict(int [][]puz)
     {
         int distance = 0;
-        int temp = 0;
-        int i; int j;
+        int i; int j; int goal_row; int goal_col;
+        boolean linear_conflict = false;
+        int step = 1;
 
         for (int x = 0; x < size; x++)
         {
             for (int y = 0; y < size; y++)
             {
-                if (goal_state[x][y] != puz[x][y])
+                find_piece(goal_state, puz[x][y]);
+                distance += step * (Math.abs(x - row) + Math.abs(y - col));
+                goal_row = row; //coordinates of goal state of current piece
+                goal_col = col; 
+                if (x > goal_row) //checks going up
                 {
-                    find_piece(goal_state, puz[x][y]);
-                    temp = Math.abs(x - row) + Math.abs(y - col);
-                    if (x > row) //direction is up to get to goal
+                    i = x - 1;
+                    while (i >= goal_row)
                     {
-                        i = x - 1;
-                        while (i >= row)
-                        {
-                            find_piece(goal_state, puz[i][y]);
-                            if (i == row)
-                            {
-                                temp += 2;
-                                break ;
-                            }
-                        }
+                        find_piece(goal_state, puz[i][y]);
+                        if (y == col) //checks conflict
+                            linear_conflict = true;
+                        i--;
                     }
-                    else //direction is down to get to goal
-                    {
-                        i = x + 1;
-                        while (i <= row)
-                        {
-                            find_piece(goal_state, puz[i][y]);
-                            if (i == row)
-                            {
-                                temp += 2;
-                                break ;
-                            }
-                        }
-                    }
-                    if (y > col)
-                    {
-                        j = y - 1;
-                        while (j >= row)
-                        {
-                            find_piece(goal_state, puz[i][y]);
-                            if (j == col)
-                            {
-                                temp += 2;
-                                break ;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        j = x + 1;
-                        while (j <= row)
-                        {
-                            find_piece(goal_state, puz[i][y]);
-                            if (j == col)
-                            {
-                                temp += 2;
-                                break ;
-                            }
-                        }
-                    }
-                    distance += temp;
                 }
+                else //checks going down
+                {
+                    i = x + 1;
+                    while (i <= goal_row)
+                    {
+                        find_piece(goal_state, puz[i][y]);
+                        if (y == col) //checks conflict
+                            linear_conflict = true;
+                        i++;
+                    }
+                }
+                if (y > goal_col && !linear_conflict) //checks going left
+                {
+                    i = y - 1;
+                    while (i >= goal_col)
+                    {
+                        find_piece(goal_state, puz[x][i]);
+                        if (x == row) //checks conflict
+                            linear_conflict = true;
+                        i--;
+                    }
+                }
+                else if (y < goal_col && !linear_conflict) //checks going right
+                {
+                    i = y + 1;
+                    while (i <= goal_col)
+                    {
+                        find_piece(goal_state, puz[x][i]);
+                        if (x == row) //checks conflict
+                            linear_conflict = true;
+                        i++;
+                    }
+                }
+                if (linear_conflict == true)
+                    distance += 2;
             }
         }
         return (distance);

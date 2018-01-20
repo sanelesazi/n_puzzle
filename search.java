@@ -30,7 +30,6 @@ public class search
             for (int i = 0; i < current.child_nodes.size(); i++)
             {
                 node current_child = current.child_nodes.get(i);
-                System.out.println("dir: "+ current_child.direction + " f val: "+ current_child.move_cost);
                 if (current_child.move_cost > lowest_move_cost) //ignores the node if it has a high f value
                     continue ;
                 if (current_child.is_goal())
