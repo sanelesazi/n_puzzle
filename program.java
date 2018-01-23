@@ -65,7 +65,8 @@ public class program
         if (args.length == 2)
         {
             astar_search astar = new astar_search();
-            puzzle_size = io_class.getPuzzleSize(args[1]);
+            if ((puzzle_size = io_class.getPuzzleSize(args[1])) == -1)
+                return ;
             int [][]init_puzzle = io_class.getPuzzle(args[1]);
             LinkedList<node> solution = new LinkedList<node>();
             String heuristic_function = args[0];
@@ -100,11 +101,6 @@ public class program
                     System.out.println("No Solution found! - Suggestions:");
                     System.out.println("Try different heuristic function OR Solution may not exist at all");
                 }
-                /*else if (solution.size() == 1) //If puzzle is at goal state, only 1 node will be in the list
-                {
-                    stop_timer = System.currentTimeMillis();
-                    System.out.println("Puzzle is in goal state");
-                }*/
                 else
                 {
                     stop_timer = System.currentTimeMillis();

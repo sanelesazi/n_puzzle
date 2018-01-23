@@ -23,8 +23,16 @@ public class IO extends program
     {
         IO.this.file = args;
         String line;
+
+        try {
         fr = new FileReader(file);
         br = new BufferedReader(fr);
+        }
+        catch(IOException e)
+        {
+            System.out.println("No such file in directory");
+            return (-1);
+        }
         
         line = br.readLine();
         while (puzzle_size == 0) 
@@ -60,7 +68,7 @@ public class IO extends program
                 continue ;
             else
             {
-                String []row = line.split(" ");
+                String []row = line.replaceAll("(^\\s+|\\s$)", "").split(" +");
                 if (row.length != puzzle_size)      //ensuring we have 3 /4 /5 pieces if it is a 3 /4 /5 dimension puzzle
                     return (null);
                 j = 0;

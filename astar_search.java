@@ -11,49 +11,47 @@ public class astar_search extends program
         LinkedList<node> open_list = new LinkedList<node>(); //stores a queue of nodes that will be inspected
         LinkedList<node> closed_list = new LinkedList<node>(); //stores nodes that have been inspected
         boolean solution_found = false;
-        
-        open_list.add(root);
-        while (!open_list.isEmpty() && !solution_found)
+
+        if (is_solvable(root.puzzle))
         {
-            node current = open_list.get(0);
-            opened++;
-            open_list.remove();
-            closed_list.add(current);
-            current.expand_node();
-            for (node child: current.child_nodes)
+            open_list.add(root);
+            while (!open_list.isEmpty() && !solution_found)
             {
-                child.calc_heuristic_value(heuristic_func);
-                if (child.is_goal())
+                node current = open_list.getFirst();
+                opened++;
+                closed_list.add(current);
+                open_list.removeFirst();
+                if (current.is_goal())
                 {
-                    path_to_solution(solution_path, child);
+                    path_to_solution(solution_path, current);
                     solution_found = true;
-                    //return (solution_path);
                 }
-                else if (!contained(open_list, child) && !contained(closed_list, child))
-                    open_list.add(child);
-                else if (contained(open_list, child))
+                else{
+                current.expand_node();
+                for (node child: current.child_nodes)
                 {
-                    continue ;
-                    /*if (open_list.get(index).g_value < child.g_value)
-                        continue ;
-                    else
+                    child.calc_heuristic_value(heuristic_func);
+                    if (contained(closed_list, child))
                     {
-                        open_list.remove(index);
-                        open_list.add(child);
-                    }*/
-                }
-                else if (contained(closed_list, child))
-                {
-                    if (closed_list.get(index).g_value < child.g_value)
-                        continue ;
-                    else
-                    {
-                        //closed_list.remove(index);
-                        //open_list.add(child);
+                        if (closed_list.get(index).g_value > child.g_value)
+                        {
+                            open_list.add(child);
+                        }
                     }
+                    else if (contained(open_list, child))
+                    {
+                        if (open_list.get(index).g_value > child.g_value)
+                        {
+                            open_list.remove(index);
+                            open_list.add(child);
+                        }
+                    }
+                    else if (!contained(open_list, child) && !contained(closed_list, child))
+                        open_list.add(child);
                 }
+                reorder_list(open_list);
             }
-            reorder_list(open_list);
+            }
         }
         return (solution_path);
     }
@@ -78,11 +76,41 @@ public class astar_search extends program
 
     private static void path_to_solution(LinkedList<node> path, node n) //this inserts the nodes that lead to the solution into the linkedlist path
     {
+        int counter = 1;
         while (n != null)
         {
             path.add(n);
             n = n.parent;
+            System.out.println("path: "+ counter++);
         }
+    }
+    private static int inverse_count(int []pz)
+    {
+        int inv_counter = 0;
+        for (int i = 0; i < (puzzle_size * puzzle_size) - 1; i++)
+        {
+            for (int j = i + 1; j < (puzzle_size * puzzle_size); j++)
+                if (pz[i] > pz[j])
+                    inv_counter++;
+        }
+        return (inv_counter);
+    }
+
+    public boolean is_solvable(int [][]puzzle)
+    {
+        int []checker_puzzle = new int [puzzle_size * puzzle_size];
+        int i = -1;
+        
+        for (int x = 0; x < puzzle_size; x++)
+        {
+            for (int y = 0; y < puzzle_size; y++)
+                checker_puzzle[++i] = puzzle[x][y];
+        }
+        i = inverse_count(checker_puzzle);
+        if (i % 2 != 0)
+            return (true);
+        else
+            return (false);
     }
 }
 
@@ -90,9 +118,9 @@ class compare_f_value implements Comparator<node>
 {
     public int compare (node x1, node x2)
     {
-        if (x1.f_value > x2.f_value)
+        if (x1.h_value > x2.h_value)
             return (1);
-        else if (x1.f_value == x2.f_value)
+        else if (x1.h_value == x2.h_value)
         {
             if (x1.g_value > x2.g_value)
                 return (1);
